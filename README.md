@@ -1,13 +1,15 @@
 # Macros
 
-Brings simple, powerful custom macros support to VS Code.
+> Brings simple, powerful custom macros support to VS Code.
 Made with <3 by [geddski](http://gedd.ski)
+>
+>See also [Level up your Coding with Macros](http://gedd.ski/post/level-up-coding-with-macros/)
+>
+based on [macrosRe](https://github.com/l7ssha) + [New Features](#new)
 
-- based on [macrosRe](https://github.com/l7ssha) with applied PRs of [#13](https://github.com/geddski/macros/pull/13) & [#11](https://github.com/geddski/macros/pull/11)
+# Original
 
-See also [Level up your Coding with Macros](http://gedd.ski/post/level-up-coding-with-macros/)
-
-## Create Custom Macros
+> ## Create Custom Macros
 
 Create your own custom macros by adding them to your `settings.json` (Code|File > Preferences > User Settings)
 
@@ -31,7 +33,7 @@ To see all the names of possible actions VS Code can run, see `Default Keyboard 
 
 Give your macros names that briefly describe what they do.
 
-## Add Keybindings to Run your Macros
+> ## Add Keybindings to Run your Macros
 
 in `keybindings.json` (Code|File > Preferences > Keyboard Shortcuts) add bindings to your macros:
 
@@ -44,7 +46,7 @@ in `keybindings.json` (Code|File > Preferences > Keyboard Shortcuts) add binding
 
 Notice that `macros.my_macro_name` has to match what you named your macro.
 
-## Passing Arguments to Commands
+> ## Passing Arguments to Commands
 
 Many commands accept arguments, like the "type" command which lets you insert text into the editor. For these cases use an object instead of a string when specifying the command to call in your `settings.json`:
 
@@ -57,7 +59,7 @@ Many commands accept arguments, like the "type" command which lets you insert te
 }
 ```
 
-## Executing Snippets As Part Of A Macro
+> ## Executing Snippets As Part Of A Macro
 
 Macros can also execute any of your snippets which is super neat. Just insert the same text that you would normally type for the snippet, followed by the `insertSnippet` command:
 
@@ -70,7 +72,15 @@ Macros can also execute any of your snippets which is super neat. Just insert th
 }
 ```
 
-## Run Commands With A Delay
+<br>
+
+# New
+
+> ## Run macro From command pallete
+
+simple use `Ctrl+P` or `Alt+P` depend on your os, and type `Macros:Execute` then simply chose the macro you want to execute.
+
+> ## Run Commands With A Delay
 
 ```json
 "macros": {
@@ -87,11 +97,11 @@ Macros can also execute any of your snippets which is super neat. Just insert th
 }
 ```
 
-## Run A Command Times Another Command [#48](https://github.com/geddski/macros/issues/48)
+> ## Run A Command Times Another Command [#48](https://github.com/geddski/macros/issues/48)
 
 ```json
 "macros": {
-    "undoMacroChanges": [
+    "undoCommentDown": [
         {
             "command": "undo",
             "args": {
@@ -102,7 +112,7 @@ Macros can also execute any of your snippets which is super neat. Just insert th
 }
 ```
 
-## Repeat A Command [#36](https://github.com/geddski/macros/issues/36)
+> ## Repeat A Command [#36](https://github.com/geddski/macros/issues/36)
 
 ```json
 "macros": {
@@ -116,10 +126,3 @@ Macros can also execute any of your snippets which is super neat. Just insert th
     ]
 }
 ```
-
-## Run macro From command pallete
-
-simple use `Ctrl+P` or `Alt+P` depend on your os, and type `Macros:Execute` then simply chose the macro you want to execute.
-
-## License
-MIT
