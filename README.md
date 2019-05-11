@@ -3,7 +3,9 @@
 Brings simple, powerful custom macros support to VS Code.
 Made with <3 by [geddski](http://gedd.ski)
 
-See also [Level up your Coding with Macros](http://gedd.ski/post/level-up-coding-with-macros/) 
+- based on [macrosRe](https://github.com/l7ssha) with applied PRs of [#13](https://github.com/geddski/macros/pull/13) & [#11](https://github.com/geddski/macros/pull/11)
+
+See also [Level up your Coding with Macros](http://gedd.ski/post/level-up-coding-with-macros/)
 
 ## Create Custom Macros
 
@@ -24,8 +26,8 @@ For example:
 
 This macro creates a copy of the current line, comments out the original line, and moves the cursor down to the copy.
 
-Your macros can run any built-in VS Code action, and even actions from other extensions. 
-To see all the names of possible actions VS Code can run, see `Default Keyboard Shortcuts` (Code|File > Preferences > Keyboard Shortcuts) 
+Your macros can run any built-in VS Code action, and even actions from other extensions.
+To see all the names of possible actions VS Code can run, see `Default Keyboard Shortcuts` (Code|File > Preferences > Keyboard Shortcuts)
 
 Give your macros names that briefly describe what they do.
 
@@ -40,7 +42,7 @@ in `keybindings.json` (Code|File > Preferences > Keyboard Shortcuts) add binding
 }
 ```
 
-Notice that `macros.my_macro_name` has to match what you named your macro. 
+Notice that `macros.my_macro_name` has to match what you named your macro.
 
 ## Passing Arguments to Commands
 
@@ -55,7 +57,7 @@ Many commands accept arguments, like the "type" command which lets you insert te
 }
 ```
 
-## Executing Snippets as part of a Macro
+## Executing Snippets As Part Of A Macro
 
 Macros can also execute any of your snippets which is super neat. Just insert the same text that you would normally type for the snippet, followed by the `insertSnippet` command:
 
@@ -68,16 +70,56 @@ Macros can also execute any of your snippets which is super neat. Just insert th
 }
 ```
 
+## Run Commands With A Delay
+
+```json
+"macros": {
+    "createNewTabAndPaste": [
+        "workbench.action.files.newUntitledFile",
+        {
+            "command": "$delay",
+            "args": {
+                "delay": 50
+            }
+        },
+        "editor.action.clipboardPasteAction"
+    ]
+}
+```
+
+## Run A Command Times Another Command [#48](https://github.com/geddski/macros/issues/48)
+
+```json
+"macros": {
+    "undoMacroChanges": [
+        {
+            "command": "undo",
+            "args": {
+                "command": "commentDown"
+            }
+        }
+    ]
+}
+```
+
+## Repeat A Command [#36](https://github.com/geddski/macros/issues/36)
+
+```json
+"macros": {
+    "commentDown10": [
+        {
+            "command": "commentDown",
+            "args": {
+                "times": 10
+            }
+        }
+    ]
+}
+```
+
+## Run macro From command pallete
+
+simple use `Ctrl+P` or `Alt+P` depend on your os, and type `Macros:Execute` then simply chose the macro you want to execute.
+
 ## License
 MIT
-
-## Known Issues
-
-Doesn't currently add macros to command pallete (have to use keybindings).
-
-
-## Release Notes
-
-### 1.0.0
-
-Initial release of Macros
