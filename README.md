@@ -78,7 +78,7 @@ Macros can also execute any of your snippets which is super neat. Just insert th
 
 > ## Run macro From command pallete
 
-simple use `Ctrl+P` or `Alt+P` depend on your os, and type `Macros:Execute` then simply chose the macro you want to execute.
+simply use `Ctrl+P` or `Alt+P` depend on your os, and type `Macros:Execute` then chose the macro you want to execute.
 
 > ## Run Commands With A Delay
 
