@@ -132,7 +132,7 @@ function executeCommand(action) {
  * @return  {[type]}           [return description]
  */
 function loadMacros(context) {
-    const settings = vscode.workspace.getConfiguration('macros')
+    const settings = getSettings()
 
     getMacrosList().forEach((name) => {
         const disposable = vscode.commands.registerCommand(`macros.${name}`, () => {
