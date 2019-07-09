@@ -6,31 +6,19 @@ function activate(context) {
 
     context.subscriptions.push(
         vscode.commands.registerCommand('macros.execute', async () => {
-            const macros = getMacrosList()
-            macros.shift() // remove wierd "inspect"
-            let items = []
-
-            for (let index = 0; index < macros.length; index++) {
-                let item = macros[index]
-
-                items.push({
-                    label: item
-                })
-            }
-
-            vscode.window.showQuickPick(items).then((selection) => {
-                if (!selection) {
-                    return
+            vscode.window.showQuickPick(getQPList()).then((selection) => {
+                if (selection) {
+                    vscode.commands.executeCommand(`macros.${selection}`)
                 }
-
-                vscode.commands.executeCommand(`macros.${selection.label}`)
             })
         })
     )
 
-    vscode.workspace.onDidChangeConfiguration(() => {
-        disposeMacros()
-        loadMacros(context)
+    vscode.workspace.onDidChangeConfiguration((e) => {
+        if (e.affectsConfiguration('macros.list')) {
+            disposeMacros()
+            loadMacros(context)
+        }
     })
 }
 
@@ -49,9 +37,25 @@ function getSettings() {
  * @return  array  macro names list
  */
 function getMacrosList() {
+    let ignore = ['has', 'get', 'update', 'inspect']
+
     return Object
-        .keys(getSettings())
-        .filter((prop) => !prop.match(/has|get|update/g))
+        .keys(getSettings().get('list'))
+        .filter((prop) => ignore.indexOf(prop) < 0)
+}
+
+/**
+ * [getQPList description]
+ *
+ * @return  {[type]}  [return description]
+ */
+function getQPList() {
+    let list = getMacrosList()
+    let ignore = getSettings().get('qp-ignore')
+
+    return ignore.length
+        ? list.filter((item) => ignore.indexOf(item) < 0)
+        : list
 }
 
 /**
@@ -74,7 +78,7 @@ function executeDelayCommand(time) {
  * @return  {[type]}           [return description]
  */
 async function executeCommandTimesOther(command, otherCmnd) {
-    const settings = getSettings()
+    const settings = getSettings().get('list')
     let range = settings[otherCmnd].length
 
     for (const index of Array(range)) {
@@ -132,7 +136,7 @@ function executeCommand(action) {
  * @return  {[type]}           [return description]
  */
 function loadMacros(context) {
-    const settings = getSettings()
+    const settings = getSettings().get('list')
 
     getMacrosList().forEach((name) => {
         const disposable = vscode.commands.registerCommand(`macros.${name}`, () => {

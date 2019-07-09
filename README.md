@@ -83,7 +83,7 @@ simply use `Ctrl+P` or `Alt+P` depend on your os, and type `Macros:Execute` then
 > ## Run Commands With A Delay
 
 ```json
-"macros": {
+"macros.list": {
     "createNewTabAndPaste": [
         "workbench.action.files.newUntitledFile",
         {
@@ -100,7 +100,7 @@ simply use `Ctrl+P` or `Alt+P` depend on your os, and type `Macros:Execute` then
 > ## Run A Command Times Another Command [#48](https://github.com/geddski/macros/issues/48)
 
 ```json
-"macros": {
+"macros.list": {
     "undoCommentDown": [
         {
             "command": "undo",
@@ -115,7 +115,7 @@ simply use `Ctrl+P` or `Alt+P` depend on your os, and type `Macros:Execute` then
 > ## Repeat A Command [#36](https://github.com/geddski/macros/issues/36)
 
 ```json
-"macros": {
+"macros.list": {
     "commentDown10": [
         {
             "command": "commentDown",
@@ -125,4 +125,22 @@ simply use `Ctrl+P` or `Alt+P` depend on your os, and type `Macros:Execute` then
         }
     ]
 }
+```
+
+> ## Ignore Some Commands From The Quick Picker
+
+```json
+"macros.list": {
+    "delay-100": [
+        {
+            "command": "$delay",
+            "args": {
+                "delay": 100
+            }
+        }
+    ],
+},
+"macros.qp-ignore": [
+    "delay-100",
+],
 ```
