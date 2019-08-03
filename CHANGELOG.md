@@ -6,3 +6,6 @@
 ### 0.0.2
 - add a new config to ignore commands from the quick pick `macros.qp-ignore`
 - renamed `macros` to `macros.list`
+
+### 0.0.3
+- add whitelist `qp-allow` option
