@@ -54,7 +54,7 @@ Many commands accept arguments, like the "type" command which lets you insert te
 "macros": {
   "addSemicolon": [
     "cursorEnd",
-      {"command": "type", "args": {"text": ";"}}
+      {"command": "type", "args": {"text": ";" }}
   ]
 }
 ```
@@ -66,7 +66,7 @@ Macros can also execute any of your snippets which is super neat. Just insert th
 ```json
 "macros": {
   "doMySnippet": [
-    {"command": "type", "args": {"text": "mySnippetPrefixHere"}},
+    {"command": "type", "args": {"text": "mySnippetPrefixHere" }},
     "insertSnippet"
   ]
 }
@@ -127,7 +127,7 @@ simply use `Ctrl+P` or `Alt+P` depend on your os, and type `Macros:Execute` then
 }
 ```
 
-> ## Ignore Some Commands From The Quick Picker
+> ## In/Ex-clude Commands From The Quick Picker "allow take precedence over ignore"
 
 ```json
 "macros.list": {
@@ -139,7 +139,13 @@ simply use `Ctrl+P` or `Alt+P` depend on your os, and type `Macros:Execute` then
             }
         }
     ],
+    "some-other-cmnd": [
+        // ...
+    ],
 },
+"macros.qp-allow": [
+    "some-other-cmnd",
+],
 "macros.qp-ignore": [
     "delay-100",
 ],

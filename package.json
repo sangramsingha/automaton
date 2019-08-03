@@ -2,7 +2,7 @@
     "name": "macros",
     "displayName": "macros",
     "description": "automate repetitive actions with custom macros",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "publisher": "ctf0",
     "repository": "https://github.com/ctf0/macros",
     "engines": {
@@ -31,7 +31,16 @@
                         "type": "string"
                     },
                     "uniqueItems": true,
-                    "description": "ignore commands from the quick-pick"
+                    "description": "exclude commands from the quick-pick"
+                },
+                "macros.qp-allow": {
+                    "type": "array",
+                    "default": [],
+                    "items": {
+                        "type": "string"
+                    },
+                    "uniqueItems": true,
+                    "description": "include commands to the quick-pick"
                 }
             }
         },

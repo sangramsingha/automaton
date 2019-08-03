@@ -51,11 +51,18 @@ function getMacrosList() {
  */
 function getQPList() {
     let list = getMacrosList()
+    let allow = getSettings().get('qp-allow')
     let ignore = getSettings().get('qp-ignore')
 
-    return ignore.length
-        ? list.filter((item) => ignore.indexOf(item) < 0)
-        : list
+    if (allow.length) {
+        list = list.filter((item) => allow.indexOf(item) > 0)
+    }
+
+    if (ignore.length) {
+        list = list.filter((item) => ignore.indexOf(item) < 0)
+    }
+
+    return list
 }
 
 /**
