@@ -15,8 +15,15 @@
 # New
 
 * Added `onLoad` so that the defined macro run whenever vs code open or a new file is loaded.
-* If you need to run the extension only when opening certain file extension, it can be defined using `onFileExtension` .  
-  >With `onLoad` defined to `true` and `onFileExtension` not defined or set to `*` will run macro on every new file that is opened in editor.
+* If you need to run the extension only when opening certain file extension, it can be defined using `onFileExtension` .
+* If you need to run the same macro on different file, define it using a `regex`
+```json
+"onFileExtension":".md|.txt|.html",
+```
+>With `onLoad` defined to `true` and `onFileExtension` not defined or set to `*` then macro will run on every new file that is opened in editor.
+<br/><br/>
+>`onFileExtension` not defined then quick pick will show list of automaton macros even if there are no active file in editor.<br/><br/>
+> Automaton quick pick list will show only those macros which are not present in `automaton.qp-ignore` list.
 
 > ## Create Custom Macros
 
@@ -27,6 +34,7 @@ For example:
 ```json
 "automaton.list": {
     "commentDown": {
+        "description" : "Copy line down and comment",
         "action" :[
                 "editor.action.copyLinesDownAction",
                 "cursorUp",
@@ -35,6 +43,7 @@ For example:
             ]
     },
     "markdownShowPreview": {
+        "description" : "Default markdown preview on load",
         "onLoad": true,
         "onFileExtension":".md",
         "action" :[
@@ -58,11 +67,9 @@ Second macro is to view the markdown in preview mode everytime mardown file is o
 Your macros can run any built-in VS Code action, and even actions from other extensions.
 To see all the names of possible actions VS Code can run, see `Default Keyboard Shortcuts` (Code|File > Preferences > Keyboard Shortcuts)
 
-Give your macros names that briefly describe what they do.
+Add `description` to your macros that briefly describe what they do.
 
 <hr style="background-color:black; border:none; height:5px; margin:0px;" />
-
-# These were already there 
 
 > ## Add Keybindings to Run your Macros
 
@@ -83,10 +90,12 @@ Many commands accept arguments, like the "type" command which lets you insert te
 
 ```json
 "automaton.list": {
-  "addSemicolon": [
-    "cursorEnd",
-      {"command": "type", "args": {"text": ";" }}
-  ]
+  "addSemicolon": {
+      "action":[
+          "cursorEnd",
+          {"command": "type", "args": {"text": ";" }}
+      ]
+  }
 }
 ```
 
@@ -96,10 +105,12 @@ Macros can also execute any of your snippets which is super neat. Just insert th
 
 ```json
 "automaton.list": {
-  "doMySnippet": [
-    {"command": "type", "args": {"text": "mySnippetPrefixHere" }},
-    "insertSnippet"
-  ]
+  "doMySnippet": {
+      "action":[
+        {"command": "type", "args": {"text": "mySnippetPrefixHere" }},
+        "insertSnippet"
+    ]
+  }
 }
 ```
 
@@ -113,46 +124,52 @@ simply use `Ctrl+P` or `Alt+P` depend on your os, and type `Automaton: Execute` 
 
 ```json
 "automaton.list": {
-    "createNewTabAndPaste": [
-        "workbench.action.files.newUntitledFile",
-        {
-            "command": "$delay",
-            "args": {
-                "delay": 50
-            }
-        },
-        "editor.action.clipboardPasteAction"
-    ]
+    "createNewTabAndPaste": {
+        "action": [
+            "workbench.action.files.newUntitledFile",
+            {
+                "command": "$delay",
+                "args": {
+                    "delay": 50
+                }
+            },
+            "editor.action.clipboardPasteAction"
+        ]
+    }
 }
 ```
 
-> ## Run A Command Times Another Command [#48](https://github.com/geddski/macros/issues/48)
+> ## Run A Command Times Another Command 
 
 ```json
 "automaton.list": {
-    "undoCommentDown": [
-        {
-            "command": "undo",
-            "args": {
-                "command": "commentDown"
+    "undoCommentDown": {
+        "action": [
+            {
+                "command": "undo",
+                "args": {
+                    "command": "commentDown"
+                }
             }
-        }
-    ]
+        ]
+    }
 }
 ```
 
-> ## Repeat A Command [#36](https://github.com/geddski/macros/issues/36)
+> ## Repeat A Command
 
 ```json
 "automaton.list": {
-    "commentDown10": [
-        {
-            "command": "commentDown",
-            "args": {
-                "times": 10
+    "commentDown10": {
+        "action": [
+            {
+                "command": "commentDown",
+                "args": {
+                    "times": 10
+                }
             }
-        }
-    ]
+        ]
+    }
 }
 ```
 
@@ -160,17 +177,19 @@ simply use `Ctrl+P` or `Alt+P` depend on your os, and type `Automaton: Execute` 
 
 ```json
 "automaton.list": {
-    "delay-100": [
-        {
-            "command": "$delay",
-            "args": {
-                "delay": 100
+    "delay-100": {
+     "action": [
+            {
+                "command": "$delay",
+                "args": {
+                    "delay": 100
+                }
             }
-        }
-    ],
-    "some-other-cmnd": [
+        ]   
+    },
+    "some-other-cmnd": {
         // ...
-    ],
+    },
 },
 "automaton.qp-allow": [
     "some-other-cmnd",

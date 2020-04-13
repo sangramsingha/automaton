@@ -2,21 +2,21 @@ const vscode = require('vscode')
 const path = require('path')
 
 let disposables = []
-let macroEvent =[];
+let macroEvent = []
+let macrosObj = {}
 
 function activate(context) {
-    loadMacros(context)
+
+    loadMacros(context);
 
     let statusDisposable = vscode.window.setStatusBarMessage("Automaton loading is inprogress");
-
-    let macrosList = getSettings().get('list')
-
     let editor = vscode.window.activeTextEditor;
+    macrosObj = getSettings().get('list')
 
     if(editor){
 
-        macroEvent.push(vscode.window.activeTextEditor.document.fileName);
-        runOnFileLoad(macrosList, vscode.window.activeTextEditor.document.fileName)
+        macroEvent.push(editor.document.fileName);
+        runOnFileLoad(editor.document.fileName)
 
     }
 
@@ -24,7 +24,7 @@ function activate(context) {
         vscode.commands.registerCommand('automaton.execute', async () => {
             vscode.window.showQuickPick(getQPList()).then((selection) => {
                 if (selection) {
-                    vscode.commands.executeCommand(`automaton.${selection}`)
+                    vscode.commands.executeCommand(`automaton.${selection.label}`)
                 }
             })
         })
@@ -48,7 +48,7 @@ function activate(context) {
             if(!containsObj(filePath) && isNotGitFile(filePath)){
                 
                 macroEvent.push(filePath);
-                runOnFileLoad(macrosList, filePath)
+                runOnFileLoad(filePath)
 
             }
             
@@ -56,13 +56,10 @@ function activate(context) {
     });
 
     vscode.workspace.onDidChangeConfiguration((e) => {
-        if (e.affectsConfiguration('automaton.list')) {
-
-            macrosList = []
-            macrosList = getSettings().get('list')
-            
+        if (e.affectsConfiguration('automaton.list')) {            
             disposeMacros()
             loadMacros(context)
+            macrosObj = getSettings().get('list')
         }
     })
     
@@ -78,8 +75,32 @@ function activate(context) {
  */
 function isNotGitFile(filePath){
 
-    return !(path.extname(filePath).toUpperCase()+"" == ".git".toUpperCase())
+    let match = true;
+    let regex = new RegExp(".git", "i");
 
+    if(filePath.match(regex)){
+        match = false
+    }
+
+    return match;
+}
+
+/**
+ * [isFileExtensionSame description]
+ *
+ * @return  Boolean [return description]
+ */
+
+function isFileExtensionSame(fileExtension, filePath){
+
+    let match = false;
+    let regex = new RegExp(fileExtension, "i");
+
+    if(filePath.match(regex)){
+        match = true
+    }
+
+    return match;
 }
 
 /**
@@ -109,11 +130,11 @@ function containsObj(obj) {
  *
  * @return  void  [return description]
  */
-function runOnFileLoad(macrosList, filePath){
+function runOnFileLoad(filePath){
 
     getMacrosList().forEach((m)=>{
         
-        let macro = macrosList[m]
+        let macro = macrosObj[m]
         
         if(typeof macro.onLoad != "undefined"){
 
@@ -154,17 +175,6 @@ function getSettings() {
 }
 
 /**
- * [isFileExtensionSame description]
- *
- * @return  Boolean [return description]
- */
-
-function isFileExtensionSame(fileExtension, filePath){
-
-    return (path.extname(filePath).toUpperCase()+"" == fileExtension.toUpperCase()+"")
-}
-
-/**
  * [getMacrosList description]
  *
  * @return  array  macro names list
@@ -177,22 +187,72 @@ function getMacrosList() {
         .filter((prop) => ignore.indexOf(prop) < 0)
 }
 
+function getMacroListDescription(){
+
+    let ignore = ['has', 'get', 'update', 'inspect']
+
+    let editor = vscode.window.activeTextEditor;
+    let currentActiveFile = null;
+    if(editor){
+        currentActiveFile = editor.document.fileName
+    }
+
+    let list = Object
+        .keys(getSettings().get('list'))
+        .filter((prop) => ignore.indexOf(prop) < 0)
+        .filter((prop) => {
+
+            let obj = macrosObj[prop];
+            if(obj.hasOwnProperty("onFileExtension")){
+                if(currentActiveFile){
+
+                    if(isFileExtensionSame(obj.onFileExtension, currentActiveFile)){
+                        return true;
+                    }else if(obj.onFileExtension+"" == "*"){
+                        return true;
+                    }else{
+                        return false;
+                    }
+
+                }else{
+                    return false;
+                }
+
+            }else{
+                return true;
+            }
+        })
+        .map((prop) => {
+
+            return {
+                        'detail': ((macrosObj[prop].description)? macrosObj[prop].description : "No description"),
+                        'label': prop
+                    };
+        })
+
+    return list;
+
+}
+
 /**
  * [getQPList description]
  *
  * @return  {[type]}  [return description]
  */
 function getQPList() {
-    let list = getMacrosList()
+    let list = getMacroListDescription()
     let allow = getSettings().get('qp-allow')
     let ignore = getSettings().get('qp-ignore')
 
     if (allow.length) {
-        list = list.filter((item) => allow.indexOf(item) > 0)
+        list = list
+                .filter((item) => allow.indexOf(item.label) > 0)
+                
     }
 
     if (ignore.length) {
-        list = list.filter((item) => ignore.indexOf(item) < 0)
+        list = list
+                .filter((item) => ignore.indexOf(item.label) < 0)
     }
 
     return list
@@ -287,7 +347,8 @@ function loadMacros(context) {
         })
         context.subscriptions.push(disposable)
         disposables.push(disposable)
-    })
+    })   
+
 }
 
 /**
