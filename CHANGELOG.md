@@ -1,14 +1,9 @@
 # Changelog
 
 ### 0.0.1
-- init
+- added feature to run on file open.
 
 ### 0.0.2
-- add a new config to ignore commands from the quick pick `macros.qp-ignore`
-- renamed `macros` to `macros.list`
-
-### 0.0.3
-- add whitelist `qp-allow` option
-
-### 0.0.4
-- update readme
+- bug fixed macro won't run when single file is open
+- bug fixed hot reloading of automaton settins when settings.json is changed
+- Some other small improvement

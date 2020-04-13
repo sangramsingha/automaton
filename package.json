@@ -1,10 +1,10 @@
 {
-    "name": "macros",
-    "displayName": "macros",
-    "description": "automate repetitive actions with custom macros",
-    "version": "0.0.4",
-    "publisher": "ctf0",
-    "repository": "https://github.com/ctf0/macros",
+    "name": "automaton",
+    "displayName": "Automaton",
+    "description": "Run macro on file open, repetitive actions with custom macros at your finger tip",
+    "version": "0.0.2",
+    "publisher": "Sango",
+    "repository": "https://github.com/sangramsingha/automaton",
     "engines": {
         "vscode": "^1.5.0"
     },
@@ -19,12 +19,14 @@
     "contributes": {
         "configuration": {
             "type": "object",
-            "title": "Macros configuration",
+            "title": "Automaton configuration",
             "properties": {
-                "macros.list": {
-                    "type": "object"
+                "automaton.list": {
+                    "type": "object",
+                    "title" : "Macro defination",
+                    "description": "Define custom macro"
                 },
-                "macros.qp-ignore": {
+                "automaton.qp-ignore": {
                     "type": "array",
                     "default": [],
                     "items": {
@@ -33,7 +35,7 @@
                     "uniqueItems": true,
                     "description": "exclude commands from the quick-pick"
                 },
-                "macros.qp-allow": {
+                "automaton.qp-allow": {
                     "type": "array",
                     "default": [],
                     "items": {
@@ -46,8 +48,8 @@
         },
         "commands": [
             {
-                "command": "macros.execute",
-                "title": "Macros: Execute"
+                "command": "automaton.execute",
+                "title": "Automaton: Execute"
             }
         ]
     },

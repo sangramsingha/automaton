@@ -1,0 +1,28 @@
+{
+    "automaton.list": {
+        "markdownShowPreview": {
+            "onLoad": true,
+            "onFileExtension": ".md",
+            "action": [
+                {
+                    "command": "$delay",
+                    "args": {
+                        "delay": 1000
+                    }
+                },
+                "markdown.showPreview"
+            ]
+        },
+        "commentDown": {
+            "action": [
+                "editor.action.copyLinesDownAction",
+                "cursorUp",
+                "editor.action.addCommentLine",
+                "cursorDown"
+            ]
+        }
+    },
+    "automaton.qp-ignore": [
+        "markdownShowPreview"
+    ]
+}

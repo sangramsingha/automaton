@@ -1,25 +1,147 @@
 const vscode = require('vscode')
+const path = require('path')
+
 let disposables = []
+let macroEvent =[];
 
 function activate(context) {
     loadMacros(context)
 
+    let statusDisposable = vscode.window.setStatusBarMessage("Automaton loading is inprogress");
+
+    let macrosList = getSettings().get('list')
+
+    let editor = vscode.window.activeTextEditor;
+
+    if(editor){
+
+        macroEvent.push(vscode.window.activeTextEditor.document.fileName);
+        runOnFileLoad(macrosList, vscode.window.activeTextEditor.document.fileName)
+
+    }
+
     context.subscriptions.push(
-        vscode.commands.registerCommand('macros.execute', async () => {
+        vscode.commands.registerCommand('automaton.execute', async () => {
             vscode.window.showQuickPick(getQPList()).then((selection) => {
                 if (selection) {
-                    vscode.commands.executeCommand(`macros.${selection}`)
+                    vscode.commands.executeCommand(`automaton.${selection}`)
                 }
             })
         })
     )
 
+    vscode.workspace.onDidCloseTextDocument((e) => {
+        
+        let filePath = e.fileName
+
+        if(isNotGitFile(filePath)){
+            removeFromEventArray(filePath)
+        }
+
+    });
+
+    vscode.workspace.onDidOpenTextDocument((e) => {
+        if (e) {
+
+            let filePath = e.fileName;       
+            
+            if(!containsObj(filePath) && isNotGitFile(filePath)){
+                
+                macroEvent.push(filePath);
+                runOnFileLoad(macrosList, filePath)
+
+            }
+            
+        }
+    });
+
     vscode.workspace.onDidChangeConfiguration((e) => {
-        if (e.affectsConfiguration('macros.list')) {
+        if (e.affectsConfiguration('automaton.list')) {
+
+            macrosList = []
+            macrosList = getSettings().get('list')
+            
             disposeMacros()
             loadMacros(context)
         }
     })
+    
+    setTimeout(() => {
+        statusDisposable.dispose()
+    }, 1000);
+}
+
+/**
+ * [isNotGitFile description]
+ *
+ * @return  Boolean  [return description]
+ */
+function isNotGitFile(filePath){
+
+    return !(path.extname(filePath).toUpperCase()+"" == ".git".toUpperCase())
+
+}
+
+/**
+ * [removeFromEventArray description]
+ *
+ * @return  void  [return description]
+ */
+function removeFromEventArray(filePath){
+    
+    let index = macroEvent.indexOf(filePath)
+    macroEvent = macroEvent.splice(index+1)
+
+}
+
+/**
+ * [containsObj description]
+ *
+ * @return  Boolean  [return description]
+ */
+function containsObj(obj) {
+
+    return macroEvent.some(elem => elem === obj)
+}
+
+/**
+ * [runOnFileLoad description]
+ *
+ * @return  void  [return description]
+ */
+function runOnFileLoad(macrosList, filePath){
+
+    getMacrosList().forEach((m)=>{
+        
+        let macro = macrosList[m]
+        
+        if(typeof macro.onLoad != "undefined"){
+
+            if(typeof macro.onFileExtension != "undefined"){
+
+                if(macro.onLoad && isFileExtensionSame(macro.onFileExtension, filePath)){
+
+                    vscode.commands.executeCommand(`automaton.${m}`)
+
+                }else if(macro.onLoad && macro.onFileExtension === "*"){
+                    
+                    vscode.commands.executeCommand(`automaton.${m}`)
+
+                }
+
+            }else{
+
+                if(macro.onLoad){
+
+                    vscode.commands.executeCommand(`automaton.${m}`)
+
+                }
+
+            }
+
+        }
+    });
+
 }
 
 /**
@@ -28,7 +150,18 @@ function activate(context) {
  * @return  {[type]}  [return description]
  */
 function getSettings() {
-    return vscode.workspace.getConfiguration('macros')
+    return vscode.workspace.getConfiguration('automaton')
+}
+
+/**
+ * [isFileExtensionSame description]
+ *
+ * @return  Boolean [return description]
+ */
+
+function isFileExtensionSame(fileExtension, filePath){
+
+    return (path.extname(filePath).toUpperCase()+"" == fileExtension.toUpperCase()+"")
 }
 
 /**
@@ -103,7 +236,7 @@ async function executeCommandTimesOther(command, otherCmnd) {
  */
 async function executeCommandRepeat(command, times) {
     for (const index of Array(times)) {
-        await vscode.commands.executeCommand(`macros.${command}`)
+        await vscode.commands.executeCommand(`automaton.${command}`)
     }
 }
 
@@ -146,10 +279,12 @@ function loadMacros(context) {
     const settings = getSettings().get('list')
 
     getMacrosList().forEach((name) => {
-        const disposable = vscode.commands.registerCommand(`macros.${name}`, () => {
-            return settings[name].reduce((promise, action) => promise.then(() => executeCommand(action)), Promise.resolve())
+        const disposable = vscode.commands.registerCommand(`automaton.${name}`, () => {
+            return (settings[name].action)
+                        .reduce((promise, action) => promise.then(
+                            () => executeCommand(action)), Promise.resolve()
+                        )
         })
-
         context.subscriptions.push(disposable)
         disposables.push(disposable)
     })
