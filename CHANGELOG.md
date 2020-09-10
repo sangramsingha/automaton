@@ -12,3 +12,6 @@
 - Add description to quick pick list for automaton macro
 - `onFileExtension` now accepts regular expresion, file path can also be included
 - Quick pick list of automation macro now detects file type and loads only those extension which are relevent
+
+### 0.0.4
+- Error handling
