@@ -2,7 +2,7 @@
     "name": "automaton",
     "displayName": "Automaton",
     "description": "Run macro on file open, repetitive actions with custom macros at your finger tip",
-    "version": "0.0.4.1",
+    "version": "0.0.4",
     "publisher": "Sango",
     "repository": "https://github.com/sangramsingha/automaton",
     "engines": {
