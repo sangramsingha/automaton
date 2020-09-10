@@ -342,7 +342,9 @@ function loadMacros(context) {
         const disposable = vscode.commands.registerCommand(`automaton.${name}`, () => {
             return (settings[name].action)
                         .reduce((promise, action) => promise.then(
-                            () => executeCommand(action)), Promise.resolve()
+                            () => executeCommand(action)).catch(err => {
+                                vscode.window.showErrorMessage(err.message);
+                            }), Promise.resolve()
                         )
         })
         context.subscriptions.push(disposable)
