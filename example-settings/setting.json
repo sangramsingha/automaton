@@ -3,14 +3,14 @@
         "markdownShowPreview": {
             "onLoad": true,
             "onFileExtension": ".md",
-            "action": [
+            "action" :[
                 {
                     "command": "$delay",
                     "args": {
                         "delay": 1000
                     }
                 },
-                "markdown.showPreview"
+                "markdown.showPreviewToSide"
             ]
         },
         "commentDown": {

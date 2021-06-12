@@ -32,6 +32,7 @@ Create your own custom macros by adding them to your `settings.json` (Code|File 
 For example:
 
 ```json
+//
 "automaton.list": {
     "commentDown": {
         "description" : "Copy line down and comment",
@@ -53,10 +54,11 @@ For example:
                     "delay": 1000
                 }
             },
-            "markdown.showPreview"
+            "markdown.showPreviewToSide"
         ]
     }
 }
+//
 ```
 
 First macro creates a copy of the current line, comments out the original line, and moves the cursor down to the copy, by invoking command `automaton.commentDown` or pressing `ctrl+shift+p` and `Automaton: Execute` and select your defined macro from pick list.

@@ -15,3 +15,7 @@
 
 ### 0.0.4
 - Error handling
+
+### 0.0.5
+- Readme updated
+- Support for untrusted environment
